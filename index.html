@@ -1,62 +1,61 @@
-<html lang="pt-br">
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <!DOCTYPE html>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Google authentication - Exemplo 2</title>
+    <title>Social Login - Google</title>
+
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://unpkg.com/jwt-decode/build/jwt-decode.js"></script>
     <link rel="stylesheet" href="styles.css" />
 
-    <!-- Fonte Roboto do Google -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Roboto"
-      rel="stylesheet"
-      type="text/css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap-theme.min.css"
-    />
+    <script>
+      function handleCredentialResponse(response) {
+        const data = jwt_decode(response.credential);
+
+        fullName.textContent = `Nome completo: ${data.name}`;
+        sub.textContent = `Sub: ${data.sub}`;
+        given_name.textContent = `Nome: ${data.given_name}`;
+        family_name.textContent = `Sobrenome: ${data.family_name}`;
+        email.textContent = `Email: ${data.email}`;
+        verifiedEmail.textContent = `Status da verificação do E-mail: ${
+          data.email_verified ? "Verificado" : "Não verificado"
+        }`;
+        picture.setAttribute("src", data.picture);
+      }
+
+      window.onload = function () {
+        google.accounts.id.initialize({
+          client_id: "CLIENT_ID_HERE",
+          callback: handleCredentialResponse,
+        });
+        google.accounts.id.renderButton(document.getElementById("buttonDiv"), {
+          width: "300",
+          size: "large",
+          shape: "pill",
+          locale: "pt-br",
+          type: "standard",
+          theme: "filled_black",
+          text: "${button.text}",
+          logo_alignment: "left",
+        });
+      };
+    </script>
   </head>
   <body>
-    <div class="container body-content">
-      <div class="box-login">
-        <h2>Login</h2>
+    <div id="content">
+      <div id="buttonDiv"></div>
 
-        <!-- Código html do botão de login -->
-        <div id="gSignInWrapper">
-          <div id="customBtn" class="customGPlusSignIn">
-            <span class="icon"></span>
-            <span class="buttonText">Logar com o Google</span>
-          </div>
-        </div>
-        <div id="name"></div>
-
-        <hr />
-        <a href="javascript:void(0);" onclick="signOut();">Sign out</a>
+      <div id="data">
+        <img id="picture" />
+        <p id="fullName"></p>
+        <p id="sub"></p>
+        <p id="given_name"></p>
+        <p id="family_name"></p>
+        <p id="email"></p>
+        <p id="verifiedEmail"></p>
       </div>
-
-      <hr />
-      <footer>
-        <p>&copy; Fábrica de Código</p>
-      </footer>
     </div>
-
-    <script src="./index.js"></script>
-
-    <!-- Google api -->
-    <script src="https://apis.google.com/js/api:client.js"></script>
-
-    <!--JQuery e Bootstrap - Não são obrigatórios para ao autenticação -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-    <!-- função para iniciar o app -->
-    <script>
-      startApp();
-    </script>
   </body>
 </html>
